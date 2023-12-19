@@ -7,20 +7,20 @@
             "command": "gcc",
             "args": [
                 "-g",
-                "-Wall",
+                "-w",
                 "-o",
-                "bin/Debug/Lab 3a",
-                "*.cpp",
-                "../common/GL_utilities.c",
-                "../common/LoadTGA.c",
-                "../common/Windows/MicroGlut.c",
-                "../common/Windows/glew.c",
+                "build/main",
+                "src/*.cpp",
+                "common/GL_utilities.c",
+                "common/LoadTGA.c",
+                "common/Windows/MicroGlut.c",
+                "common/Windows/glew.c",
                 "-I",
                 "${workspaceFolder}",
                 "-I",
-                "${workspaceFolder}/../common",
+                "${workspaceFolder}/common",
                 "-I",
-                "${workspaceFolder}/../common/Windows",
+                "${workspaceFolder}/common/Windows",
                 "-lopengl32",
                 "-lglu32",
                 "-lgdi32"
@@ -31,41 +31,6 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "problemMatcher": [
-                "$gcc"
-            ]
-        },
-        {
-            "label": "Release",
-            "type": "shell",
-            "command": "gcc",
-            "args": [
-                "-O2",
-                "-o",
-                "bin/Release/Lab 3a",
-                "*.cpp",
-                "../common/GL_utilities.c",
-                "../common/LoadTGA.c",
-                "../common/Windows/MicroGlut.c",
-                "../common/Windows/glew.c",
-                "-I",
-                "${workspaceFolder}",
-                "-I",
-                "${workspaceFolder}/common",
-                "-I",
-                "${workspaceFolder}/common/Windows",
-                "-lopengl32",
-                "-lglu32",
-                "-lgdi32",
-                "-s"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
             },
             "problemMatcher": [
                 "$gcc"

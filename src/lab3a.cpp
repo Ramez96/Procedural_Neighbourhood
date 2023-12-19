@@ -113,7 +113,7 @@ void MakeBranch(int depth,float rotAngle)
 gluggModel MakeTree()
 {
 	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
+	gluggSetNormalName("inNormal"); 
 	gluggSetTexCoordName("inTexCoord");
 
 	gluggBegin(GLUGG_TRIANGLES);
@@ -158,8 +158,8 @@ void init(void)
 	projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 300.0);
 
 	// Load and compile shader
-	phongShader = loadShaders("phong.vert", "W:\\LIU\\TNM084\\Lab 3a\\phong.frag");
-	texShader = loadShaders("W:\\LIU\\TNM084\\Lab 3a\\textured.vert", "W:\\LIU\\TNM084\\Lab 3a\\textured.frag");
+	phongShader = loadShaders("phong.vert", "phong.frag");
+	texShader = loadShaders("textured.vert", "textured.frag");
 	printError("init shader");
 
 	// Upload geometry to the GPU:
@@ -174,12 +174,12 @@ void init(void)
 
 	glUniform1i(glGetUniformLocation(texShader, "tex"), 0); // Texture unit 0
 
-	LoadTGATextureSimple("W:\\LIU\\TNM084\\Lab 3a\\grass.tga", &grasstex);
+	LoadTGATextureSimple("grass.tga", &grasstex);
 	glBindTexture(GL_TEXTURE_2D, grasstex);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
 
-	LoadTGATextureSimple("W:\\LIU\\TNM084\\Lab 3a\\bark2.tga", &barktex);
+	LoadTGATextureSimple("bark2.tga", &barktex);
 
 	tree = MakeTree();
 
