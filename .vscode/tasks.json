@@ -1,0 +1,75 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Debug",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "-Wall",
+                "-o",
+                "bin/Debug/Lab 3a",
+                "*.cpp",
+                "../common/GL_utilities.c",
+                "../common/LoadTGA.c",
+                "../common/Windows/MicroGlut.c",
+                "../common/Windows/glew.c",
+                "-I",
+                "${workspaceFolder}",
+                "-I",
+                "${workspaceFolder}/../common",
+                "-I",
+                "${workspaceFolder}/../common/Windows",
+                "-lopengl32",
+                "-lglu32",
+                "-lgdi32"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Release",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-O2",
+                "-o",
+                "bin/Release/Lab 3a",
+                "*.cpp",
+                "../common/GL_utilities.c",
+                "../common/LoadTGA.c",
+                "../common/Windows/MicroGlut.c",
+                "../common/Windows/glew.c",
+                "-I",
+                "${workspaceFolder}",
+                "-I",
+                "${workspaceFolder}/common",
+                "-I",
+                "${workspaceFolder}/common/Windows",
+                "-lopengl32",
+                "-lglu32",
+                "-lgdi32",
+                "-s"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}
