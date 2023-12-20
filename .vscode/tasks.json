@@ -11,6 +11,7 @@
                 "-o",
                 "build/main",
                 "src/*.cpp",
+                
                 "common/GL_utilities.c",
                 "common/LoadTGA.c",
                 "common/Windows/MicroGlut.c",
