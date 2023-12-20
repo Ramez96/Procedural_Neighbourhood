@@ -7,6 +7,7 @@
 #include "VectorUtils4.h"
 #include "LittleOBJLoaderX.h"
 #include "LoadTGA.h"
+#include "gluggShapes.h"
 #include "glugg.h"
 #include <math.h>
 
@@ -15,62 +16,63 @@
 // uses framework OpenGL
 // uses framework Cocoa
 
-// *void MakeCylinderAlt(int aSlices, float height, float topwidth, float bottomwidth)
-// {
-// 	gluggMode(GLUGG_TRIANGLE_STRIP);
-// 	vec3 top = SetVector(0,height,0);
-// 	vec3 center = SetVector(0,0,0);
-// 	vec3 bn = SetVector(0,-1,0); // Bottom normal
-// 	vec3 tn = SetVector(0,1,0); // Top normal
 
-// 	for (float a = 0.0; a < 2.0*M_PI+0.0001; a += 2.0*M_PI / aSlices)
-// 	{
-// 		float a1 = a;
 
-// 		vec3 p1 = SetVector(topwidth * cos(a1), height, topwidth * sin(a1));
-// 		vec3 p2 = SetVector(bottomwidth * cos(a1), 0, bottomwidth * sin(a1));
-// 		vec3 pn = SetVector(cos(a1), 0, sin(a1));
+void MakeCylinderAlt(int aSlices, float height, float topwidth, float bottomwidth)
+{
+	gluggMode(GLUGG_TRIANGLE_STRIP);
+	vec3 top = SetVector(0,height,0);
+	vec3 center = SetVector(0,0,0);
+	vec3 bn = SetVector(0,-1,0); // Bottom normal
+	vec3 tn = SetVector(0,1,0); // Top normal
 
-// // Done making points and normals. Now create polygons!
-// 		gluggNormalv(pn);
-// 	    gluggTexCoord(height, a1/M_PI);
-// 	    gluggVertexv(p2);
-// 	    gluggTexCoord(0, a1/M_PI);
-// 	    gluggVertexv(p1);
-		
-// 	}
+	for (float a = 0.0; a < 2.0*M_PI+0.0001; a += 2.0*M_PI / aSlices)
+	{
+		float a1 = a;
 
-// 	// Then walk around the top and bottom with fans
-// 	gluggMode(GLUGG_TRIANGLE_FAN);
-// 	gluggNormalv(bn);
-// 	gluggVertexv(center);
-// 	// Walk around edge
-// 	for (float a = 0.0; a <= 2.0*M_PI+0.001; a += 2.0*M_PI / aSlices)
-// 	{
-// 		vec3 p = vec3(bottomwidth * cos(a), 0, bottomwidth * sin(a));
-// 	    gluggVertexv(p);
-// 	}
-// 	// Walk around edge
-// 	gluggMode(GLUGG_TRIANGLE_FAN); // Reset to new fan
-// 	gluggNormalv(tn);
-// 	gluggVertexv(top);
-// 	for (float a = 2.0*M_PI; a >= -0.001; a -= 2.0*M_PI / aSlices)
-// 	{
-// 		vec3 p = vec3(topwidth * cos(a), height, topwidth * sin(a));
-// 	    gluggVertexv(p);
-// 	}
-// }
+		vec3 p1 = SetVector(topwidth * cos(a1), height, topwidth * sin(a1));
+		vec3 p2 = SetVector(bottomwidth * cos(a1), 0, bottomwidth * sin(a1));
+		vec3 pn = SetVector(cos(a1), 0, sin(a1));
+
+// Done making points and normals. Now create polygons!
+		gluggNormalv(pn);
+	    gluggTexCoord(height, a1/M_PI);
+	    gluggVertexv(p2);
+	    gluggTexCoord(0, a1/M_PI);
+	    gluggVertexv(p1);
+	}
+
+	// Then walk around the top and bottom with fans
+	gluggMode(GLUGG_TRIANGLE_FAN);
+	gluggNormalv(bn);
+	gluggVertexv(center);
+	// Walk around edge
+	for (float a = 0.0; a <= 2.0*M_PI+0.001; a += 2.0*M_PI / aSlices)
+	{
+		vec3 p = vec3(bottomwidth * cos(a), 0, bottomwidth * sin(a));
+	    gluggVertexv(p);
+	}
+	// Walk around edge
+	gluggMode(GLUGG_TRIANGLE_FAN); // Reset to new fan
+	gluggNormalv(tn);
+	gluggVertexv(top);
+	for (float a = 2.0*M_PI; a >= -0.001; a -= 2.0*M_PI / aSlices)
+	{
+		vec3 p = vec3(topwidth * cos(a), height, topwidth * sin(a));
+	    gluggVertexv(p);
+	}
+}
 
 
 mat4 projectionMatrix;
 
 Model *floormodel;
-GLuint asfalttex, barktex;
+GLuint grasstex, barktex, asfalttex;
 
-// // Reference to shader programs
+// Reference to shader programs
 GLuint phongShader, texShader;
 
-// // Floor quad
+// Floor quad
 GLfloat vertices2[] = {	-20.5,0.0,-20.5,
 						20.5,0.0,-20.5,
 						20.5,0.0,20.5,
@@ -92,63 +94,122 @@ float randomiser(){
     r = (2*r -1);
     return r;
 }
+void MakeBranch(int depth,float rotAngle)
+{
+    if(depth != 0){
+        gluggPushMatrix();
+        gluggTranslate(0,1,0);
+        gluggRotate(rotAngle,sin(rand()), sin(rand()), sin(rand()));
+        gluggScale(0.8,0.8,0.8);
+        MakeCylinderAlt(20,1,0.1,0.15);
+        MakeBranch(depth-1,-rotAngle);
+        MakeBranch(depth-1,rotAngle);
+
+        gluggPopMatrix();
+    }
+
+}
 
 
-// void MakeBranch(int depth,float rotAngle)
-// {
-//     if(depth != 0){
-//         gluggPushMatrix();
-//         gluggTranslate(0,1,0);
-//         gluggRotate(rotAngle,sin(rand()), sin(rand()), sin(rand()));
-//         gluggScale(0.8,0.8,0.8);
-//         MakeCylinderAlt(20,1,0.1,0.15);
-//         MakeBranch(depth-1,-rotAngle);
-//         MakeBranch(depth-1,rotAngle);
+void makeRectangle(float height, float width) {
+    gluggMode(GLUGG_TRIANGLE_STRIP);
 
-//         gluggPopMatrix();
-//     }
+    // Define rectangle vertices
+    vec3 p1 = SetVector(-width / 2.0, 0.001, height / 2.0);
+    vec3 p2 = SetVector(width / 2.0, 0.001, height / 2.0);
+    vec3 p3 = SetVector(-width / 2.0, 0.001, -height / 2.0);
+    vec3 p4 = SetVector(width / 2.0, 0.001, -height / 2.0);
 
-// }
+    // Define normal (assuming the rectangle is in the xz-plane)
+    vec3 normal = SetVector(0.0, 1.0, 0.0);
 
-// gluggModel MakeRoad(){
-// 	gluggSetPositionName("inPosition");
-// 	gluggSetNormalName("inNormal"); 
-//  	gluggSetTexCoordName("inTexCoord");
+    gluggNormalv(normal);
 
-// 	gluggBegin(GLUGG_TRIANGLES);
+    // Vertex 1
+    gluggTexCoord(0, 0);
+    gluggVertexv(p1);
 
-// 	MakeCylinderAlt(20, 2, 0.1, 0.15);
-// 	gluggPushMatrix();
-//     gluggTranslate(0.0f,1.0f, 0.0f);
-//     gluggRotate(1.0,0,0,1);
-//     MakeCylinderAlt(20,3,0.1,0.1);
-//     MakeBranch(10,0.4);
-//     MakeBranch(10,-0.8);
-// 	return gluggBuildModel(0);
-	
-// }
+    // Vertex 2
+    gluggTexCoord(1, 0);
+    gluggVertexv(p2);
 
-// gluggModel MakeTree()
-// {
-// 	gluggSetPositionName("inPosition");
-// 	gluggSetNormalName("inNormal"); 
-// 	gluggSetTexCoordName("inTexCoord");
+    // Vertex 3
+    gluggTexCoord(0, 1);
+    gluggVertexv(p3);
 
-// 	gluggBegin(GLUGG_TRIANGLES);
-// 	// Between gluggBegin and gluggEnd, call MakeCylinderAlt plus glugg transformations
-// 	// to create a tree.
+    // Vertex 4
+    gluggTexCoord(1, 1);
+    gluggVertexv(p4);
+}
 
-// 	MakeCylinderAlt(20, 2, 0.1, 0.15);
-// 	//gluggPushMatrix();
-//     gluggTranslate(0.0f,1.0f, 0.0f);
-//     //gluggRotate(1.0,0,0,1);
-//     //MakeCylinderAlt(20,3,0.1,0.1);
-//     MakeBranch(10,0.4);
-//     MakeBranch(10,-0.8);
-// 	return gluggBuildModel(0);
-// }
 
-// gluggModel tree;
+void makeBlockRow(int depth, float rotAngle, float scaleX, float scaleZ, float translate){
+	if(depth != 0){
+		float randomScale = abs(3*sin(rand()) -1);
+		float randomX = randomScale;
+		float randomY = randomScale;
+		printf("print random: Random Scale:%.2f\n", randomScale);		
+		gluggPushMatrix();		
+		gluggTranslate(translate,0,0);
+		//gluggRotate(rotAngle,0,1,0);
+		gluggScale(scaleX,1,scaleZ);
+		gluggCube(2);		
+		gluggPopMatrix();
+		makeBlockRow(depth-1, rotAngle,1,1, translate+2.2);
+		makeBlockRow(depth-1, rotAngle,1,1, -translate-2.2);			
+	}
+}
+
+void makeNetwork(int depth, float translate){
+	float scaleX = 1;
+	float scaleZ = 1;	
+	if(depth != 0){
+		gluggPushMatrix();
+		gluggTranslate(0.0,0.0,translate);
+		gluggCube(2);
+		makeBlockRow(6, M_PI_2, scaleX,scaleZ, 2.2);
+		gluggPopMatrix();
+		makeNetwork(depth-1, translate+2.2);
+		makeNetwork(depth-1, -translate-2.2);
+	}	
+}
+
+gluggModel makeRoad(){
+	gluggSetPositionName("inPosition");
+	gluggSetNormalName("inNormal");
+	gluggSetTexCoordName("inTexCoord");
+	float scaleX = 1;
+	float scaleZ = 1;
+	float translate = 2.2;
+	gluggBegin(GLUGG_TRIANGLES);
+	gluggScale(scaleX,0.1,scaleZ);
+	gluggCube(2);
+	makeBlockRow(6,0,scaleX,scaleZ,translate);
+	makeNetwork(6,translate);
+	return gluggBuildModel(0);
+
+}
+
+gluggModel MakeTree(){
+	gluggSetPositionName("inPosition");
+	gluggSetNormalName("inNormal");
+	gluggSetTexCoordName("inTexCoord");
+
+	gluggBegin(GLUGG_TRIANGLES);
+	// Between gluggBegin and gluggEnd, call MakeCylinderAlt plus glugg transformations
+	// to create a tree.
+
+	MakeCylinderAlt(20, 2, 0.1, 0.15);
+	//gluggPushMatrix();
+    gluggTranslate(0.0f,1.0f, 0.0f);
+    //gluggRotate(1.0,0,0,1);
+    //MakeCylinderAlt(20,3,0.1,0.1);
+    MakeBranch(10,0.4);
+    MakeBranch(10,-0.8);
+	return gluggBuildModel(0);
+}
+
+gluggModel tree, city;
 
 
 void reshape(int w, int h)
@@ -156,11 +217,11 @@ void reshape(int w, int h)
     glViewport(0, 0, w, h);
 
 	// Set the clipping volume
-	// projectionMatrix = perspective(45,1.0f*w/h,1,1000);
-	// glUseProgram(phongShader);
-	// glUniformMatrix4fv(glGetUniformLocation(phongShader, "projectionMatrix"), 1, GL_TRUE, projectionMatrix.m);
-	// glUseProgram(texShader);
-	// glUniformMatrix4fv(glGetUniformLocation(texShader, "projectionMatrix"), 1, GL_TRUE, projectionMatrix.m);
+	projectionMatrix = perspective(45,1.0f*w/h,1,1000);
+	glUseProgram(phongShader);
+	glUniformMatrix4fv(glGetUniformLocation(phongShader, "projectionMatrix"), 1, GL_TRUE, projectionMatrix.m);
+	glUseProgram(texShader);
+	glUniformMatrix4fv(glGetUniformLocation(texShader, "projectionMatrix"), 1, GL_TRUE, projectionMatrix.m);
 }
 
 void init(void)
@@ -192,14 +253,14 @@ void init(void)
 
 	glUniform1i(glGetUniformLocation(texShader, "tex"), 0); // Texture unit 0
 
-	LoadTGATextureSimple("asphalt-road-texture-dark-gray-color.tga", &asfalttex);
-	glBindTexture(GL_TEXTURE_2D, asfalttex);
+	LoadTGATextureSimple("grass.tga", &grasstex);
+	glBindTexture(GL_TEXTURE_2D, grasstex);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
 
-	// LoadTGATextureSimple("bark2.tga", &barktex);
-	
-	// tree = MakeTree();
+	LoadTGATextureSimple("road.tga", &barktex);
+
+	city = makeRoad();
 
 
 	printError("init arrays");
@@ -262,7 +323,7 @@ void display(void)
 
 	a += 0.1;
 
-	glBindTexture(GL_TEXTURE_2D, asfalttex);
+	glBindTexture(GL_TEXTURE_2D, grasstex);
 	// Floor
 	glUseProgram(texShader);
 	m = worldToView;
@@ -270,11 +331,11 @@ void display(void)
 	DrawModel(floormodel, texShader, "inPosition", "inNormal", "inTexCoord");
 
 	// Draw the tree, as defined on MakeTree
-	//glBindTexture(GL_TEXTURE_2D, barktex);
+	glBindTexture(GL_TEXTURE_2D, barktex);
 	glUseProgram(texShader);
     m = worldToView * T(0, 0, 0);
     glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
-	//gluggDrawModel(tree, texShader);
+	gluggDrawModel(city, texShader);
 
 	printError("display");
 
@@ -299,7 +360,7 @@ int main(int argc, char *argv[])
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100,100);
 	glutInitWindowSize(640,360);
-	glutCreateWindow ("Procedual City");
+	glutCreateWindow ("Fractal tree lab");
 	glutRepeatingTimer(20);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keys);
