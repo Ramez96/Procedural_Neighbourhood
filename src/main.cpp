@@ -9,7 +9,9 @@
 #include "LoadTGA.h"
 #include "gluggShapes.h"
 #include "glugg.h"
+#include "makeCityGross.h"
 #include <math.h>
+
 
 #define PI 3.14159265
 
@@ -65,7 +67,7 @@ void MakeCylinderAlt(int aSlices, float height, float topwidth, float bottomwidt
 
 
 mat4 projectionMatrix;
-
+const float ROADWIDTH = 0.5;
 Model *floormodel;
 GLuint grasstex, barktex, asfalttex;
 
@@ -94,6 +96,13 @@ float randomiser(){
     r = (2*r -1);
     return r;
 }
+
+float randomiserConst(){
+	float r = 0.7f+rand() /((RAND_MAX)/0.3f);
+	printf("print random number: %.2f\n", r);		
+    return r;	
+}
+
 void MakeBranch(int depth,float rotAngle)
 {
     if(depth != 0){
@@ -143,49 +152,48 @@ void makeRectangle(float height, float width) {
 }
 
 
-void makeBlockRow(int depth, float rotAngle, float scaleX, float scaleZ, float translate){
-	if(depth != 0){
-		float randomScale = abs(3*sin(rand()) -1);
-		float randomX = randomScale;
-		float randomY = randomScale;
-		printf("print random: Random Scale:%.2f\n", randomScale);		
+void makeBlockRow(int depth, float scale, float translate){
+	float newScale = randomiserConst();
+	if(depth != 0){		
+		// float randomX = randomScale;
+		// float randomY = randomScale;
+		//printf("print random: Random Scale:%.2f\n", scale);		
 		gluggPushMatrix();		
 		gluggTranslate(translate,0,0);
-		//gluggRotate(rotAngle,0,1,0);
-		gluggScale(scaleX,1,scaleZ);
+		//gluggRotate(rotAngle,0,1,0);	
+		gluggScale(newScale,1,newScale);
 		gluggCube(2);		
 		gluggPopMatrix();
-		makeBlockRow(depth-1, rotAngle,1,1, translate+2.2);
-		makeBlockRow(depth-1, rotAngle,1,1, -translate-2.2);			
+		makeBlockRow(depth-1, newScale, translate+2.5);
+		// makeBlockRow(depth-1, rotAngle,1,1, -translate-2.2);			
 	}
 }
 
-void makeNetwork(int depth, float translate){
-	float scaleX = 1;
-	float scaleZ = 1;	
+void makeNetwork(int depth, float scale, float translate){	
+	float newScale = randomiserConst();
 	if(depth != 0){
 		gluggPushMatrix();
-		gluggTranslate(0.0,0.0,translate);
-		gluggCube(2);
-		makeBlockRow(6, M_PI_2, scaleX,scaleZ, 2.2);
+		gluggTranslate(0.0,0.0,translate);		
+		gluggCube(2);		
+		makeBlockRow(15, newScale, 2.5);
 		gluggPopMatrix();
-		makeNetwork(depth-1, translate+2.2);
-		makeNetwork(depth-1, -translate-2.2);
+		makeNetwork(depth-1,newScale, translate+2.5);
+		// makeNetwork(depth-1, -translate-2.2);
 	}	
 }
-
+//Build city blocks
 gluggModel makeRoad(){
 	gluggSetPositionName("inPosition");
 	gluggSetNormalName("inNormal");
 	gluggSetTexCoordName("inTexCoord");
-	float scaleX = 1;
-	float scaleZ = 1;
-	float translate = 2.2;
+	float scale = 1;
+	float translate = 2.5;
 	gluggBegin(GLUGG_TRIANGLES);
-	gluggScale(scaleX,0.1,scaleZ);
+	gluggScale(scale,0.1,scale);
+	gluggTranslate(-19.0,0.0,-19.0);
 	gluggCube(2);
-	makeBlockRow(6,0,scaleX,scaleZ,translate);
-	makeNetwork(6,translate);
+	makeBlockRow(15,scale,translate);
+	makeNetwork(15,scale,translate);
 	return gluggBuildModel(0);
 
 }
