@@ -9,7 +9,7 @@
 #include "LoadTGA.h"
 #include "gluggShapes.h"
 #include "glugg.h"
-#include "makeCityGross.h"
+#include "makeCity.h"
 #include <math.h>
 
 
@@ -157,7 +157,8 @@ void makeBlockRow(int depth, float translate){
 		gluggPushMatrix();		
 		gluggTranslate(translate,0,0);		
 		gluggScale(newScale,1,newScale);
-		gluggCube(2);		
+		gluggCube(2);
+		makeHouse();
 		gluggPopMatrix();
 		makeBlockRow(depth-1, translate+2.5);		
 	}
@@ -177,7 +178,7 @@ void makeNetwork(int depth, float translate){
 
 
 //Build city blocks
-gluggModel makeRoad(){
+gluggModel makeCity(){
 	gluggSetPositionName("inPosition");
 	gluggSetNormalName("inNormal");
 	gluggSetTexCoordName("inTexCoord");
@@ -261,7 +262,7 @@ void init(void)
 
 	LoadTGATextureSimple("road.tga", &barktex);
 
-	city = makeRoad();
+	city = makeCity();
 
 
 	printError("init arrays");
