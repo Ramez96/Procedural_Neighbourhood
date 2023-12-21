@@ -69,7 +69,7 @@ void MakeCylinderAlt(int aSlices, float height, float topwidth, float bottomwidt
 mat4 projectionMatrix;
 const float ROADWIDTH = 0.5;
 Model *floormodel;
-GLuint grasstex, barktex, asfalttex;
+GLuint grasstex, barktex, asfalttex, concretetex, brickstex;
 
 // Reference to shader programs
 GLuint phongShader, texShader;
@@ -89,19 +89,6 @@ GLfloat texcoord2[] = {	50.0f, 50.0f,
 						50.0f, 0.0f};
 GLuint indices2[] = {	0,3,2, 0,2,1};
 
-// THIS IS WHERE YOUR WORK GOES!
-float randomiser(){
-
-    float r = ((double) rand() / (RAND_MAX)) +1;
-    r = (2*r -1);
-    return r;
-}
-
-float randomiserConst(){
-	float r = 0.7f+rand() /((RAND_MAX)/0.3f);
-	printf("print random number: %.2f\n", r);		
-    return r;	
-}
 
 void MakeBranch(int depth,float rotAngle)
 {
@@ -151,46 +138,10 @@ void makeRectangle(float height, float width) {
     gluggVertexv(p4);
 }
 
-void makeBlockRow(int depth, float translate){
-	float newScale = randomiserConst();		
-	if(depth != 0){				
-		gluggPushMatrix();		
-		gluggTranslate(translate,0,0);		
-		gluggScale(newScale,1,newScale);
-		gluggCube(2);
-		makeHouse();
-		gluggPopMatrix();
-		makeBlockRow(depth-1, translate+2.5);		
-	}
-		
-}
-
-void makeNetwork(int depth, float translate){	
-	float newScale = randomiserConst();
-	if(depth != 0){
-		gluggPushMatrix();
-		gluggTranslate(0.0,0.0,translate);				
-		makeBlockRow(16, 0);
-		gluggPopMatrix();
-		makeNetwork(depth-1,translate+2.5);		
-	}	
-}
 
 
-//Build city blocks
-gluggModel makeCity(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-	float scale = 1;
-	float translate = 2.5;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggScale(scale,0.1,scale);
-	gluggTranslate(-19.0,0.0,-19.0);		
-	makeNetwork(16,0);	
-	return gluggBuildModel(0);
+//Build tiles
 
-}
 
 gluggModel MakeTree(){
 	gluggSetPositionName("inPosition");
@@ -211,7 +162,7 @@ gluggModel MakeTree(){
 	return gluggBuildModel(0);
 }
 
-gluggModel tree, city;
+gluggModel tree, tiles, bases, walls;
 
 
 void reshape(int w, int h)
@@ -260,9 +211,18 @@ void init(void)
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
 
-	LoadTGATextureSimple("road.tga", &barktex);
+	LoadTGATextureSimple("concrete.tga", &concretetex);
+	glBindTexture(GL_TEXTURE_2D, concretetex);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
 
-	city = makeCity();
+	LoadTGATextureSimple("bricks.tga", &brickstex);
+	glBindTexture(GL_TEXTURE_2D, brickstex);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
+	
+	tiles = makeTiles();
+	bases = makeBases();
 
 
 	printError("init arrays");
@@ -333,11 +293,18 @@ void display(void)
 	DrawModel(floormodel, texShader, "inPosition", "inNormal", "inTexCoord");
 
 	// Draw the tree, as defined on MakeTree
-	glBindTexture(GL_TEXTURE_2D, barktex);
+	glBindTexture(GL_TEXTURE_2D, concretetex);
 	glUseProgram(texShader);
     m = worldToView * T(0, 0, 0);
     glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
-	gluggDrawModel(city, texShader);
+	gluggDrawModel(tiles, texShader);
+
+	// Draw the tree, as defined on MakeBases
+	glBindTexture(GL_TEXTURE_2D, brickstex);
+	glUseProgram(texShader);
+    m = worldToView * T(0, 0, 0);
+    glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
+	gluggDrawModel(bases, texShader);
 
 	printError("display");
 
