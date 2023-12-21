@@ -151,36 +151,31 @@ void makeRectangle(float height, float width) {
     gluggVertexv(p4);
 }
 
-
-void makeBlockRow(int depth, float scale, float translate){
-	float newScale = randomiserConst();
-	if(depth != 0){		
-		// float randomX = randomScale;
-		// float randomY = randomScale;
-		//printf("print random: Random Scale:%.2f\n", scale);		
+void makeBlockRow(int depth, float translate){
+	float newScale = randomiserConst();		
+	if(depth != 0){				
 		gluggPushMatrix();		
-		gluggTranslate(translate,0,0);
-		//gluggRotate(rotAngle,0,1,0);	
+		gluggTranslate(translate,0,0);		
 		gluggScale(newScale,1,newScale);
 		gluggCube(2);		
 		gluggPopMatrix();
-		makeBlockRow(depth-1, newScale, translate+2.5);
-		// makeBlockRow(depth-1, rotAngle,1,1, -translate-2.2);			
+		makeBlockRow(depth-1, translate+2.5);		
 	}
+		
 }
 
-void makeNetwork(int depth, float scale, float translate){	
+void makeNetwork(int depth, float translate){	
 	float newScale = randomiserConst();
 	if(depth != 0){
 		gluggPushMatrix();
-		gluggTranslate(0.0,0.0,translate);		
-		gluggCube(2);		
-		makeBlockRow(15, newScale, 2.5);
+		gluggTranslate(0.0,0.0,translate);				
+		makeBlockRow(16, 0);
 		gluggPopMatrix();
-		makeNetwork(depth-1,newScale, translate+2.5);
-		// makeNetwork(depth-1, -translate-2.2);
+		makeNetwork(depth-1,translate+2.5);		
 	}	
 }
+
+
 //Build city blocks
 gluggModel makeRoad(){
 	gluggSetPositionName("inPosition");
@@ -190,10 +185,8 @@ gluggModel makeRoad(){
 	float translate = 2.5;
 	gluggBegin(GLUGG_TRIANGLES);
 	gluggScale(scale,0.1,scale);
-	gluggTranslate(-19.0,0.0,-19.0);
-	gluggCube(2);
-	makeBlockRow(15,scale,translate);
-	makeNetwork(15,scale,translate);
+	gluggTranslate(-19.0,0.0,-19.0);		
+	makeNetwork(16,0);	
 	return gluggBuildModel(0);
 
 }
