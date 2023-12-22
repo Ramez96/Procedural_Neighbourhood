@@ -107,37 +107,6 @@ void MakeBranch(int depth,float rotAngle)
 }
 
 
-void makeRectangle(float height, float width) {
-    gluggMode(GLUGG_TRIANGLE_STRIP);
-
-    // Define rectangle vertices
-    vec3 p1 = SetVector(-width / 2.0, 0.001, height / 2.0);
-    vec3 p2 = SetVector(width / 2.0, 0.001, height / 2.0);
-    vec3 p3 = SetVector(-width / 2.0, 0.001, -height / 2.0);
-    vec3 p4 = SetVector(width / 2.0, 0.001, -height / 2.0);
-
-    // Define normal (assuming the rectangle is in the xz-plane)
-    vec3 normal = SetVector(0.0, 1.0, 0.0);
-
-    gluggNormalv(normal);
-
-    // Vertex 1
-    gluggTexCoord(0, 0);
-    gluggVertexv(p1);
-
-    // Vertex 2
-    gluggTexCoord(1, 0);
-    gluggVertexv(p2);
-
-    // Vertex 3
-    gluggTexCoord(0, 1);
-    gluggVertexv(p3);
-
-    // Vertex 4
-    gluggTexCoord(1, 1);
-    gluggVertexv(p4);
-}
-
 
 
 //Build tiles
@@ -162,7 +131,7 @@ gluggModel MakeTree(){
 	return gluggBuildModel(0);
 }
 
-gluggModel tree, tiles, bases, walls;
+gluggModel tree, tiles, bases, story,ceiling;
 
 
 void reshape(int w, int h)
@@ -211,20 +180,10 @@ void init(void)
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
 
-	LoadTGATextureSimple("concrete.tga", &concretetex);
-	glBindTexture(GL_TEXTURE_2D, concretetex);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
-
-	LoadTGATextureSimple("bricks.tga", &brickstex);
-	glBindTexture(GL_TEXTURE_2D, brickstex);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
-
-	LoadTGATextureSimple("bark2.tga", &barktex);
-	
 	tiles = makeTiles();
 	bases = makeBases();
+	story = makeStory();
+	ceiling = makeCeilings();
 
 	printError("init arrays");
 }
@@ -306,9 +265,15 @@ void display(void)
     m = worldToView * T(0, 0, 0);
     glUniformMatrix4fv(glGetUniformLocation(phongShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
 	// Set red color in the Phong shader
-	GLuint colorLoc = glGetUniformLocation(phongShader, "inColor");
-	glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f); // Red color
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.5f, 0.5f, 0.5f); 
 	gluggDrawModel(bases, phongShader);
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.41f, 0.32f); // Red color
+	gluggDrawModel(story, phongShader);
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.1f, 0.62f); // Red color
+	gluggDrawModel(ceiling, phongShader);
 
 	printError("display");
 
