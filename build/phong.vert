@@ -3,6 +3,7 @@
 in  vec3 inPosition;
 in  vec3 inNormal;
 in vec2 inTexCoord;
+
 out vec3 exNormal; // Phong
 out vec3 exSurface; // Phong (specular)
 out vec2 exTexCoord;

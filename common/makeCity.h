@@ -69,13 +69,10 @@ void makeNetwork(int depth, float translate){
 }
 
 
-gluggModel makeTiles(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
+gluggModel makeTiles(){	
 	float scale = 1;
 	float translate = 2.5;
-	gluggBegin(GLUGG_TRIANGLES);
+	gluggBegin(GLUGG_TRIANGLES);	
 	gluggScale(scale,0.1,scale);
 	gluggTranslate(-19.0,0.0,-19.0);		
 	makeNetwork(16,0);	
@@ -112,9 +109,11 @@ gluggModel makeBases(){
 	gluggSetPositionName("inPosition");
 	gluggSetNormalName("inNormal");
 	gluggSetTexCoordName("inTexCoord");
+	gluggSetColorName("inColor");
 	float scale = 1;
 	float translate = 2.5;
 	gluggBegin(GLUGG_TRIANGLES);
+	gluggColor(0.0,0.0,1.0);	
 	gluggScale(scale,0.15,scale);
 	gluggTranslate(-19.0,1.0,-19.0);		
 	globalCounter = 0;

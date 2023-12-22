@@ -220,10 +220,11 @@ void init(void)
 	glBindTexture(GL_TEXTURE_2D, brickstex);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
+
+	LoadTGATextureSimple("bark2.tga", &barktex);
 	
 	tiles = makeTiles();
 	bases = makeBases();
-
 
 	printError("init arrays");
 }
@@ -300,11 +301,14 @@ void display(void)
 	gluggDrawModel(tiles, texShader);
 
 	// Draw the tree, as defined on MakeBases
-	glBindTexture(GL_TEXTURE_2D, brickstex);
-	glUseProgram(texShader);
+	//glBindTexture(GL_TEXTURE_2D, barktex);
+	glUseProgram(phongShader);
     m = worldToView * T(0, 0, 0);
-    glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
-	gluggDrawModel(bases, texShader);
+    glUniformMatrix4fv(glGetUniformLocation(phongShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
+	// Set red color in the Phong shader
+	GLuint colorLoc = glGetUniformLocation(phongShader, "inColor");
+	glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f); // Red color
+	gluggDrawModel(bases, phongShader);
 
 	printError("display");
 
