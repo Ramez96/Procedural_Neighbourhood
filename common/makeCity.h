@@ -82,34 +82,38 @@ void makeWall(int depth, float translate){
 	float newScale = fixedArray[globalCounter]*0.9f;
     printf("Scale: %f \n", fixedArray[globalCounter]);
     globalCounter++;
-	if(depth != 0){				
-		gluggPushMatrix();		
-		gluggTranslate(translate,0.0,0);		
-		gluggScale(newScale,1,newScale);
-		gluggRotate(M_PI_2,0,0,1);
-		gluggTranslate(3,0.0,0);		
-		//west
-		gluggPushMatrix();
-		gluggTranslate(0,1,0);
-		makeRectangle(2,4);		
-		gluggPopMatrix();
-		//east
-		gluggPushMatrix();
-		gluggTranslate(0,-1,0);
-		makeRectangle(2,4);		
-		gluggPopMatrix();
-		//north
-		gluggRotate(M_PI_2,1,0,0);
-		gluggPushMatrix();
-		gluggTranslate(0,1,0);
-		makeRectangle(2,4);		
-		gluggPopMatrix();
-		//South
-		gluggPushMatrix();
-		gluggTranslate(0,-1,0);
-		makeRectangle(2,4);		
-		gluggPopMatrix();
-		gluggPopMatrix();
+	if(depth != 0){			
+		int numberOfStories = randomiser(1,50);	
+		for(int i = 0; i < numberOfStories; i++){
+			gluggPushMatrix();		
+			gluggTranslate(translate,0.0,0);		
+			gluggScale(newScale,1,newScale);
+			gluggRotate(M_PI_2,0,0,1);
+			// translate the height of the wall + ceiling x number of stories
+			gluggTranslate((2+0.2)*(1+i),0.0,0);		
+			//west
+			gluggPushMatrix();
+			gluggTranslate(0,1,0);
+			makeRectangle(2,4);		
+			gluggPopMatrix();
+			//east
+			gluggPushMatrix();
+			gluggTranslate(0,-1,0);
+			makeRectangle(2,4);		
+			gluggPopMatrix();
+			//north
+			gluggRotate(M_PI_2,1,0,0);
+			gluggPushMatrix();
+			gluggTranslate(0,1,0);
+			makeRectangle(2,4);		
+			gluggPopMatrix();
+			//South
+			gluggPushMatrix();
+			gluggTranslate(0,-1,0);
+			makeRectangle(2,4);		
+			gluggPopMatrix();
+			gluggPopMatrix();
+		}			
 		makeWall(depth-1, translate+2.5);		
 	}
 		
@@ -117,6 +121,7 @@ void makeWall(int depth, float translate){
 
 void makeRoom(int depth, float translate){		
 	if(depth != 0){
+		int numberOfStories = randomiser(1,50);	
 		gluggPushMatrix();
 		gluggTranslate(0.0,0.0,translate);	
 		makeWall(16,0);			
@@ -125,7 +130,7 @@ void makeRoom(int depth, float translate){
 	}	
 }
 
-gluggModel makeStory(){
+gluggModel makeStory(){	
 	gluggSetPositionName("inPosition");
 	gluggSetNormalName("inNormal");
 	gluggSetTexCoordName("inTexCoord");
@@ -137,17 +142,12 @@ gluggModel makeStory(){
 	gluggScale(scale,0.15,scale);
 	gluggTranslate(-19.0,1.0,-19.0);		
 	globalCounter = 0;
-    makeRoom(16,0);	    
-	return gluggBuildModel(0);
+    makeRoom(16,0);	
+
+	return gluggBuildModel(0);    
 }
 
-// gluggModel makeHouse(){
-// 	int numberOfStories = randomiser(1,10);
-// 	for(int i = 0; i < numberOfStories; i++){
-// 		// add stories
-// 	}
-// 	// add roof
-// }
+
 
 void setHorizontalCeil(int depth, float translate){
 	float newScale = fixedArray[globalCounter]*0.9f;
@@ -155,8 +155,8 @@ void setHorizontalCeil(int depth, float translate){
     globalCounter++;
 	if(depth != 0){				
 		gluggPushMatrix();		
-		gluggTranslate(translate,5.1,0);		
-		gluggScale(newScale,0.1,newScale);
+		gluggTranslate(translate,4.,0);		
+		gluggScale(newScale+0.2,0.2,newScale+0.2);
 		gluggCube(2);		
 		gluggPopMatrix();
 		setHorizontalCeil(depth-1, translate+2.5);		

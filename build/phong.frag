@@ -29,8 +29,8 @@ void main(void)
 	shade = 0.3*diffuse + 1.0*specular + 0.3;
 
 	//For specular light
-	//vec3 phongColor = light * (diffuse + specular) + inColor;
-	vec3 phongColor = inColor;
+	vec3 phongColor = light * (diffuse + specular) + inColor;
+	//vec3 phongColor = inColor;
     outColor = vec4(phongColor, 1.0);
 
 	//vec4 color = vec4(exTexCoord.x, exTexCoord.y, exTexCoord.y, 1.0);
