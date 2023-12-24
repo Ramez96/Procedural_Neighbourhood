@@ -26,7 +26,7 @@ void gluggSphere(int aSlices, int hSlices, float radius);
 void gluggCylinder(int aSlices, float height, float width);
 void gluggCone(int aSlices, float height, float width);
 void gluggCylinderAlt(int aSlices, float height, float topwidth, float bottomwidth);
-void makeRectangle(float height, float width);
+void makeRectangle(float width, float height);
 
 //#ifdef __cplusplus
 //}
@@ -436,7 +436,7 @@ void gluggTetrahedron(GLfloat size)
     drawtriangle(i, (vec3 *)tdata, tndex, size);
 }
 
-void makeRectangle(float height, float width) {
+void makeRectangle(float width, float height) {
     gluggMode(GLUGG_TRIANGLE_STRIP);
 
     // Define rectangle vertices

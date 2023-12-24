@@ -67,7 +67,6 @@ void MakeCylinderAlt(int aSlices, float height, float topwidth, float bottomwidt
 
 
 mat4 projectionMatrix;
-const float ROADWIDTH = 0.5;
 Model *floormodel;
 GLuint grasstex, barktex, asfalttex, concretetex, brickstex;
 
@@ -105,9 +104,6 @@ void MakeBranch(int depth,float rotAngle)
     }
 
 }
-
-
-
 
 //Build tiles
 
@@ -252,14 +248,7 @@ void display(void)
 	glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
 	DrawModel(floormodel, texShader, "inPosition", "inNormal", "inTexCoord");
 
-	// Draw the tree, as defined on MakeTree
-	glBindTexture(GL_TEXTURE_2D, concretetex);
-	glUseProgram(texShader);
-    m = worldToView * T(0, 0, 0);
-    glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
-	gluggDrawModel(tiles, texShader);
-
-	// Draw the tree, as defined on MakeBases
+	//Draw the tree, as defined on MakeBases
 	//glBindTexture(GL_TEXTURE_2D, barktex);
 	glUseProgram(phongShader);
     m = worldToView * T(0, 0, 0);
@@ -267,6 +256,9 @@ void display(void)
 	// Set red color in the Phong shader
 
 	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.5f, 0.5f, 0.5f); 
+	gluggDrawModel(tiles, phongShader);
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.1f, 0.1f, 0.1f); 
 	gluggDrawModel(bases, phongShader);
 
 	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.41f, 0.32f); // Red color
@@ -293,6 +285,8 @@ void keys(unsigned char key, int x, int y)
 
 int main(int argc, char *argv[])
 {
+	std::srand(static_cast<unsigned int>(std::time(0)));
+
 	glutInit(&argc, argv);
 	glutInitContextVersion(3, 2);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
