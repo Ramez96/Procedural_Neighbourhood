@@ -26,7 +26,7 @@ void gluggSphere(int aSlices, int hSlices, float radius);
 void gluggCylinder(int aSlices, float height, float width);
 void gluggCone(int aSlices, float height, float width);
 void gluggCylinderAlt(int aSlices, float height, float topwidth, float bottomwidth);
-
+void makeRectangle(float width, float height);
 
 //#ifdef __cplusplus
 //}
@@ -436,6 +436,32 @@ void gluggTetrahedron(GLfloat size)
     drawtriangle(i, (vec3 *)tdata, tndex, size);
 }
 
+void makeRectangle(float width, float height) {
+    gluggMode(GLUGG_TRIANGLE_STRIP);
+
+    // Define rectangle vertices
+    vec3 p1 = SetVector(-width / 2.0, 0.001, height / 2.0);
+    vec3 p2 = SetVector(width / 2.0, 0.001, height / 2.0);
+    vec3 p3 = SetVector(-width / 2.0, 0.001, -height / 2.0);
+    vec3 p4 = SetVector(width / 2.0, 0.001, -height / 2.0);
+
+    // Define normal (assuming the rectangle is in the xz-plane)
+    vec3 normal = SetVector(0.0, 1.0, 0.0);
+
+    gluggNormalv(normal);
+    // Vertex 1
+    gluggTexCoord(0, 0);
+    gluggVertexv(p1);
+    // Vertex 2
+    gluggTexCoord(1, 0);
+    gluggVertexv(p2);
+    // Vertex 3
+    gluggTexCoord(0, 1);
+    gluggVertexv(p3);
+    // Vertex 4
+    gluggTexCoord(1, 1);
+    gluggVertexv(p4);
+}
 
 
 // ----------- end of code based on glut_shapes.c ---------------
