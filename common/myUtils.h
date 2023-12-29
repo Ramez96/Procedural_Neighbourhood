@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctime>
 
 float randomiser(float min, float max);
 
@@ -18,13 +19,10 @@ float randomiser(float min, float max);
 #define _MY_UTILS_IIMPLEMENTATION_
 
 float randomiser(float min,float max){
-	float r = min+static_cast<float>(std::rand())/(RAND_MAX)*(max-min);
-  	// printf("print divisor number: %.2f\n",static_cast<float>(std::rand())/(RAND_MAX));		
+    
 
-	// printf("print random number: %.2f\n", r);		
-    return r;	
+    float randomFraction = static_cast<float>(std::rand()) / RAND_MAX;
+    return min + randomFraction * (max - min);    
 }
-
-
 #endif
 // #endif

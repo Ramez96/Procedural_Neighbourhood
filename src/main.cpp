@@ -176,8 +176,7 @@ void init(void)
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
 
-	
-	makeTiles();
+	tiles = makeTiles();
 	bases = makeBases();
 	story = makeStory();
 	ceiling = makeCeilings();
@@ -262,10 +261,10 @@ void display(void)
 	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.1f, 0.1f, 0.1f); 
 	gluggDrawModel(bases, phongShader);
 
-	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.41f, 0.32f); // Red color
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.41f, 0.32f); 
 	gluggDrawModel(story, phongShader);
 
-	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.1f, 0.62f); // Red color
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.1f, 0.62f);
 	gluggDrawModel(ceiling, phongShader);
 
 	printError("display");
@@ -293,7 +292,7 @@ int main(int argc, char *argv[])
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100,100);
 	glutInitWindowSize(640,360);
-	glutCreateWindow ("Fractal tree lab");
+	glutCreateWindow ("Procedueral City Block");
 	glutRepeatingTimer(20);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keys);
