@@ -26,8 +26,9 @@ void gluggSphere(int aSlices, int hSlices, float radius);
 void gluggCylinder(int aSlices, float height, float width);
 void gluggCone(int aSlices, float height, float width);
 void gluggCylinderAlt(int aSlices, float height, float topwidth, float bottomwidth);
-void makeRectangle(float width, float height);
-
+void gluggRectangle(float width, float height);
+void gluggPolygon(float base, float height);
+void gluggRoof(GLfloat size, GLfloat roofHeight, GLfloat slopeHeight);
 //#ifdef __cplusplus
 //}
 //#endif
@@ -118,6 +119,59 @@ OpenGL(TM) is a trademark of Silicon Graphics, Inc.
 // uses framework OpenGL
 #include "VectorUtils4.h"
 #include "glugg.h"
+
+void gluggRoof(GLfloat size, GLfloat roofHeight, GLfloat slopeHeight) {
+    static vec3 n[4] =
+    {
+        vec3(-1.0, 0.0, 0.0),
+        vec3(0.0, 1.0, 0.0),
+        vec3(1.0, 0.0, 0.0),
+        vec3(0.0, 0.0, -1.0)  // Updated normal for the tip pointing in the positive y-axis
+    };
+
+    static GLint faces[3][3] =
+    {
+        {0, 1, 2},  // Base
+        {1, 3, 2},  // Back slope
+        {0, 1, 3}   // Front slope
+    };
+
+    vec3 v[4] =
+    {
+        vec3(-size / 2, -size / 2, 0.0),
+        vec3(size / 2, -size / 2, 0.0),
+        vec3(size / 2, size / 2, 0.0),
+        vec3(-size / 2, size / 2, 0.0)
+    };
+
+    GLint i;
+
+    // Draw the base
+    gluggMode(GLUGG_TRIANGLES);
+
+    for (i = 0; i < 3; i++) {
+        gluggNormalv(n[3]);  // Use the updated normal for the tip
+        gluggVertexv(v[faces[i][0]]);
+        gluggVertexv(v[faces[i][1]]);
+        gluggVertexv(v[faces[i][2]]);
+    }
+
+    // Draw the back slope
+    gluggNormalv(n[1]);
+
+    gluggVertexv(v[1]);
+    gluggVertexv(v[3]);
+    gluggVertexv(vec3(0.0, 0.0, roofHeight));
+
+    // Draw the front slope
+    gluggNormalv(n[2]);
+
+    gluggVertexv(v[0]);
+    gluggVertexv(v[1]);
+    gluggVertexv(vec3(0.0, 0.0, roofHeight));
+}
+
+
 
 void gluggCube(GLfloat size)
 {
@@ -436,14 +490,14 @@ void gluggTetrahedron(GLfloat size)
     drawtriangle(i, (vec3 *)tdata, tndex, size);
 }
 
-void makeRectangle(float width, float height) {
+void gluggRectangle(float width, float height) {
     gluggMode(GLUGG_TRIANGLE_STRIP);
 
     // Define rectangle vertices
-    vec3 p1 = SetVector(-width / 2.0, 0.001, height / 2.0);
-    vec3 p2 = SetVector(width / 2.0, 0.001, height / 2.0);
-    vec3 p3 = SetVector(-width / 2.0, 0.001, -height / 2.0);
-    vec3 p4 = SetVector(width / 2.0, 0.001, -height / 2.0);
+    vec3 p1 = SetVector(-width / 2.0, 0.0, height / 2.0);
+    vec3 p2 = SetVector(width / 2.0, 0.0, height / 2.0);
+    vec3 p3 = SetVector(-width / 2.0, 0.0, -height / 2.0);
+    vec3 p4 = SetVector(width / 2.0, 0.0, -height / 2.0);
 
     // Define normal (assuming the rectangle is in the xz-plane)
     vec3 normal = SetVector(0.0, 1.0, 0.0);
@@ -462,6 +516,28 @@ void makeRectangle(float width, float height) {
     gluggTexCoord(1, 1);
     gluggVertexv(p4);
 }
+
+void gluggPolygon(float base, float height){    
+    gluggMode(GLUGG_TRIANGLE_STRIP);
+    vec3 p1 = SetVector(0.0, 0.0, 0.0);
+    vec3 p2 = SetVector(base, 0.0, 0.0);
+    vec3 p3 = SetVector(0.0, 0.0, height);
+
+    vec3 normal = SetVector(0.0, 1.0, 0.0);
+    gluggNormalv(normal);
+
+    
+    // Vertex 1
+    gluggTexCoord(0, 0);
+    gluggVertexv(p1);
+    // Vertex 2
+    gluggTexCoord(1, 0);
+    gluggVertexv(p2);
+    // Vertex 3
+    gluggTexCoord(0, 1);
+    gluggVertexv(p3);
+}
+
 
 
 // ----------- end of code based on glut_shapes.c ---------------

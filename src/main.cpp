@@ -18,10 +18,7 @@
 // uses framework OpenGL
 // uses framework Cocoa
 
-
-
-void MakeCylinderAlt(int aSlices, float height, float topwidth, float bottomwidth)
-{
+void MakeCylinderAlt(int aSlices, float height, float topwidth, float bottomwidth){
 	gluggMode(GLUGG_TRIANGLE_STRIP);
 	vec3 top = SetVector(0,height,0);
 	vec3 center = SetVector(0,0,0);
@@ -36,7 +33,7 @@ void MakeCylinderAlt(int aSlices, float height, float topwidth, float bottomwidt
 		vec3 p2 = SetVector(bottomwidth * cos(a1), 0, bottomwidth * sin(a1));
 		vec3 pn = SetVector(cos(a1), 0, sin(a1));
 
-// Done making points and normals. Now create polygons!
+		// Done making points and normals. Now create polygons!
 		gluggNormalv(pn);
 	    gluggTexCoord(height, a1/M_PI);
 	    gluggVertexv(p2);
@@ -116,7 +113,6 @@ gluggModel MakeTree(){
 	gluggBegin(GLUGG_TRIANGLES);
 	// Between gluggBegin and gluggEnd, call MakeCylinderAlt plus glugg transformations
 	// to create a tree.
-
 	MakeCylinderAlt(20, 2, 0.1, 0.15);
 	//gluggPushMatrix();
     gluggTranslate(0.0f,1.0f, 0.0f);
@@ -127,7 +123,6 @@ gluggModel MakeTree(){
 	return gluggBuildModel(0);
 }
 
-gluggModel tree, tiles, bases, story,ceiling;
 
 
 void reshape(int w, int h)
@@ -180,7 +175,8 @@ void init(void)
 	bases = makeBases();
 	story = makeStory();
 	ceiling = makeCeilings();
-
+	//windows = makeWindows();
+	roof = makeRoof();
 	printError("init arrays");
 }
 
@@ -266,6 +262,12 @@ void display(void)
 
 	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.1f, 0.62f);
 	gluggDrawModel(ceiling, phongShader);
+
+	// glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.3f, 0.3f, 0.3f);
+	// gluggDrawModel(windows, phongShader);
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.9f, 0.9f, 0.3f);
+	gluggDrawModel(roof, phongShader);
 
 	printError("display");
 
