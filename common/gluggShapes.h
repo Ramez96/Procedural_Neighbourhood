@@ -29,6 +29,7 @@ void gluggCylinderAlt(int aSlices, float height, float topwidth, float bottomwid
 void gluggRectangle(float width, float height);
 void gluggPolygon(float base, float height);
 void gluggRoof(GLfloat size, GLfloat roofHeight, GLfloat slopeHeight);
+
 //#ifdef __cplusplus
 //}
 //#endif

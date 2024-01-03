@@ -86,43 +86,6 @@ GLfloat texcoord2[] = {	50.0f, 50.0f,
 GLuint indices2[] = {	0,3,2, 0,2,1};
 
 
-void MakeBranch(int depth,float rotAngle)
-{
-    if(depth != 0){
-        gluggPushMatrix();
-        gluggTranslate(0,1,0);
-        gluggRotate(rotAngle,sin(rand()), sin(rand()), sin(rand()));
-        gluggScale(0.8,0.8,0.8);
-        MakeCylinderAlt(20,1,0.1,0.15);
-        MakeBranch(depth-1,-rotAngle);
-        MakeBranch(depth-1,rotAngle);
-
-        gluggPopMatrix();
-    }
-
-}
-
-//Build tiles
-
-
-gluggModel MakeTree(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-
-	gluggBegin(GLUGG_TRIANGLES);
-	// Between gluggBegin and gluggEnd, call MakeCylinderAlt plus glugg transformations
-	// to create a tree.
-	MakeCylinderAlt(20, 2, 0.1, 0.15);
-	//gluggPushMatrix();
-    gluggTranslate(0.0f,1.0f, 0.0f);
-    //gluggRotate(1.0,0,0,1);
-    //MakeCylinderAlt(20,3,0.1,0.1);
-    MakeBranch(10,0.4);
-    MakeBranch(10,-0.8);
-	return gluggBuildModel(0);
-}
-
 
 
 void reshape(int w, int h)
@@ -171,12 +134,17 @@ void init(void)
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,	GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,	GL_REPEAT);
 
+	LoadTGATextureSimple("bark2.tga", &barktex);
+
 	tiles = makeTiles();
 	bases = makeBases();
 	story = makeStory();
 	ceiling = makeCeilings();
-	//windows = makeWindows();
+	door = makeDoor();
+	windows = makeWindows();
 	roof = makeRoof();
+	tree = MakeTree();
+	ground = makeFloor();
 	printError("init arrays");
 }
 
@@ -237,12 +205,18 @@ void display(void)
 
 	a += 0.1;
 
-	glBindTexture(GL_TEXTURE_2D, grasstex);
+	// glBindTexture(GL_TEXTURE_2D, grasstex);
 	// Floor
+	// glUseProgram(texShader);
+	// m = worldToView;
+	// glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
+	// DrawModel(floormodel, texShader, "inPosition", "inNormal", "inTexCoord");
+
+	glBindTexture(GL_TEXTURE_2D, barktex);
 	glUseProgram(texShader);
-	m = worldToView;
-	glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
-	DrawModel(floormodel, texShader, "inPosition", "inNormal", "inTexCoord");
+    m = worldToView * T(0, 0, 0);
+    glUniformMatrix4fv(glGetUniformLocation(texShader, "modelviewMatrix"), 1, GL_TRUE, m.m);
+	gluggDrawModel(tree, texShader);
 
 	//Draw the tree, as defined on MakeBases
 	//glBindTexture(GL_TEXTURE_2D, barktex);
@@ -260,14 +234,23 @@ void display(void)
 	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.41f, 0.32f); 
 	gluggDrawModel(story, phongShader);
 
-	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.71f, 0.1f, 0.62f);
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.1f, 0.1f, 0.1f);
 	gluggDrawModel(ceiling, phongShader);
 
-	// glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.3f, 0.3f, 0.3f);
-	// gluggDrawModel(windows, phongShader);
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), .2,.3,.5);
+	gluggDrawModel(windows, phongShader);
 
-	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.9f, 0.9f, 0.3f);
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.6f, 0.3f, 0.1f);
 	gluggDrawModel(roof, phongShader);
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.4f, 0.3f, 0.3f);
+	gluggDrawModel(door, phongShader);
+
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.1f, 0.3f, 0.1f);
+	gluggDrawModel(ground, phongShader);
+	// glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.4f, 0.3f, 0.3f);
+	// gluggDrawModel(tree, phongShader);
 
 	printError("display");
 
