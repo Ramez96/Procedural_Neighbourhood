@@ -118,8 +118,8 @@ void init(void)
 	printError("init shader");
 
 	// Upload geometry to the GPU:
-	floormodel = LoadDataToModel((vec3 *)vertices2, (vec3 *)normals2, (vec2 *)texcoord2, NULL,
-			indices2, 4, 6);
+	//floormodel = LoadDataToModel((vec3 *)vertices2, (vec3 *)normals2, (vec2 *)texcoord2, NULL,
+	//		indices2, 4, 6);
 
 // Important! The shader we upload to must be active!
 	glUseProgram(phongShader);
@@ -144,7 +144,8 @@ void init(void)
 	windows = makeWindows();
 	roof = makeRoof();
 	tree = MakeTree();
-	ground = makeFloor();
+	sidewalks = makeSidewalks();
+	roads = makeRoads();
 	printError("init arrays");
 }
 
@@ -246,11 +247,16 @@ void display(void)
 	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.4f, 0.3f, 0.3f);
 	gluggDrawModel(door, phongShader);
 
-
 	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.1f, 0.3f, 0.1f);
 	gluggDrawModel(ground, phongShader);
 	// glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.4f, 0.3f, 0.3f);
 	// gluggDrawModel(tree, phongShader);
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.3f, 0.3f, 0.3f);
+	gluggDrawModel(sidewalks, phongShader);
+
+	glUniform3f(glGetUniformLocation(phongShader, "inColor"), 0.1f, 0.1f, 0.1f);
+	gluggDrawModel(roads, phongShader);
 
 	printError("display");
 
