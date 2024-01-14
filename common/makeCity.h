@@ -39,40 +39,43 @@ gluggModel tree, tiles, bases, story,ceiling, windows, roof, door,ground, sidewa
 void setTree(int depth, float rotAngle);
 void setHorizontalTree(int depth, float translate);
 void setVerticalTree(int depth,float translate);
-gluggModel MakeTree();
 
 void setHorizontalDoor(int depth, float translate);
 void setVerticalDoor(int depth, float translate);
-gluggModel makeDoor();
 
 void setHorizontalRoof(int depth, float translate);
 void setVerticalRoof(int depth, float translate);
-gluggModel makeRoof();
+
 
 void setHorizontalWindow(int depth, float translate);
 void setVerticalWindow(int depth, float translate);
-gluggModel makeWindows();
 
 void setHorizontalCeil(int depth, float translate);
 void setVerticalCeil(int depth, float translate);
-gluggModel makeCeilings();
 
 void makeWall(int depth, float translate);
 void makeRoom(int depth, float translate);
-gluggModel makeStory();
 
 void makeBasesRow(int depth, float translate);
 void makeBasesNetwork(int depth, float translate);
-gluggModel makeBases();
 
 void makeNetwork(int depth, float translate);
 void makeBlockRow(int depth, float translate);
-gluggModel makeTiles();
 
+
+gluggModel makeTiles();
+gluggModel makeBases();
+gluggModel makeStory();
+gluggModel makeCeilings();
+gluggModel MakeTree();
+gluggModel makeDoor();
+gluggModel makeRoof();
+gluggModel makeWindows();
 gluggModel makeSidewalks();
 gluggModel makeRoads();
 gluggModel makeFloor();
 
+void foo(float translate, float scale,float start);
 #endif
 
 // --------------- Implementation part ----------------
@@ -108,16 +111,15 @@ void setHorizontalTree(int depth, float translate){
 		gluggPushMatrix();
 		gluggTranslate(0,1,0);
 		setTree(8,0.4);
-		setTree(8,0.7);
-		setTree(8,-0.8);
-		setTree(8,-0.4);
+		setTree(8,-0.55);
+		setTree(8,-0.75);
+		setTree(8,0.9);
 		gluggPopMatrix();
 		gluggPopMatrix();
 		}
 		setHorizontalTree(depth-1, translate+ROADWIDTH);
 		}
 }
-
 
 void setVerticalTree(int depth, float translate){
 	if(depth != 0){
@@ -130,19 +132,11 @@ void setVerticalTree(int depth, float translate){
 }
 
 gluggModel MakeTree(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-	globalCounter = 0;
-	float scale = 1;
 	float translate = 0;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggTranslate(-17.5,translate,-17.5);
+	foo(translate,1,-17.5);
 	setVerticalTree(STARTDEPTH,0);
 	return gluggBuildModel(0);
 }
-
-
 
 void setHorizontalDoor(int depth, float translate){
 	if(depth != 0){
@@ -181,16 +175,8 @@ void setVerticalDoor(int depth, float translate){
 	}
 }
 gluggModel makeDoor(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-	gluggSetColorName("inColor");
-	float scale = 1;
 	float translate = BASEYSCALE*BASEHEIGHT+TILEYSCALE*TILEHEIGHT+WALLYSCALE*WALLHEIGHT/2;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggTranslate(-19.5,translate,-19.5);
-	gluggScale(scale,1,scale);
-	globalCounter = 0;
+	foo(translate,1,-19.5);
     setVerticalDoor(STARTDEPTH,0);
 	return gluggBuildModel(0);
 }
@@ -225,21 +211,11 @@ void setVerticalRoof(int depth, float translate){
 	}
 }
 gluggModel makeRoof(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-	gluggSetColorName("inColor");
-	globalCounter = 0;
-	float scale = 1;
 	float translate = BASEYSCALE*BASEHEIGHT+TILEYSCALE*TILEHEIGHT+WALLHEIGHT*WALLYSCALE+CEILYSCALE*CEILHEIGHT;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggTranslate(-19.5, translate, -19.5);
-	gluggScale(scale,1,scale);
+	foo(translate, 1,-19.5);
 	setVerticalRoof(STARTDEPTH, 0);
 	return gluggBuildModel(0);
-
 }
-
 
 void setHorizontalWindow(int depth, float translate){
 	if(depth != 0){
@@ -318,20 +294,11 @@ void setVerticalWindow(int depth, float translate){
 	}
 }
 gluggModel makeWindows(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-	gluggSetColorName("inColor");
-	float scale = 1;
 	float translate = BASEYSCALE*BASEHEIGHT+TILEYSCALE*TILEHEIGHT+WALLYSCALE*WALLHEIGHT/2;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggTranslate(-19.5,translate,-19.5);
-	gluggScale(scale,1,scale);
-	globalCounter = 0;
+	foo(translate, 1,-19.5);
     setVerticalWindow(STARTDEPTH,0);
 	return gluggBuildModel(0);
 }
-
 
 void setHorizontalCeil(int depth, float translate){
 	if(depth != 0){
@@ -358,20 +325,11 @@ void setVerticalCeil(int depth, float translate){
 	}
 }
 gluggModel makeCeilings(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-	gluggSetColorName("inColor");
-	float scale = 1;
 	float translate = BASEYSCALE*BASEHEIGHT+TILEYSCALE*TILEHEIGHT+WALLHEIGHT*WALLYSCALE+CEILYSCALE*CEILHEIGHT/2;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggTranslate(-19.5,translate,-19.5);
-	gluggScale(scale,CEILYSCALE,scale);
-	globalCounter = 0;
+	foo(translate, CEILYSCALE,-19.5);
     setVerticalCeil(STARTDEPTH,0);
 	return gluggBuildModel(0);
 }
-
 
 void makeWall(int depth, float translate){
 
@@ -436,21 +394,13 @@ void makeRoom(int depth, float translate){
 		makeRoom(depth-1,translate+ROADWIDTH);
 	}
 }
+
 gluggModel makeStory(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-	gluggSetColorName("inColor");
-	float scale = 1;
 	float translate = BASEYSCALE*BASEHEIGHT+TILEYSCALE*TILEHEIGHT+WALLYSCALE*WALLHEIGHT/2;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggTranslate(-19.5,translate,-19.5);
-	gluggScale(scale,WALLYSCALE,scale);
-	globalCounter = 0;
+	foo(translate,WALLYSCALE,-19.5);
     makeRoom(STARTDEPTH,0);
 	return gluggBuildModel(0);
 }
-
 
 //SCRIPT FOR FOUNDATION OF HOUSE
 void makeBasesRow(int depth, float translate){
@@ -477,16 +427,8 @@ void makeBasesNetwork(int depth, float translate){
 	}
 }
 gluggModel makeBases(){
-	gluggSetPositionName("inPosition");
-	gluggSetNormalName("inNormal");
-	gluggSetTexCoordName("inTexCoord");
-	gluggSetColorName("inColor");
-	float scale = 1;
 	float translate = TILEYSCALE*TILEHEIGHT+BASEYSCALE*BASEHEIGHT/2;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggTranslate(-19.5,translate,-19.5);
-	gluggScale(scale,BASEYSCALE,scale);
-	globalCounter = 0;
+	foo(translate, BASEYSCALE,-19.5);
     makeBasesNetwork(STARTDEPTH,0);
 	return gluggBuildModel(0);
 }
@@ -517,18 +459,9 @@ void makeNetwork(int depth, float translate){
 	}
 }
 gluggModel makeTiles(){
-	float scale = 1;
 	float translate = TILEYSCALE*TILEHEIGHT/2;
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggTranslate(-19.5,translate,-19.5);
-	gluggScale(scale,TILEYSCALE,scale);
+	foo(translate, TILEYSCALE,-19.5);
 	makeNetwork(STARTDEPTH,0);
-	return gluggBuildModel(0);
-}
-
-gluggModel makeFloor(){
-	gluggBegin(GLUGG_TRIANGLES);
-	gluggRectangle(50,50);
 	return gluggBuildModel(0);
 }
 
@@ -563,11 +496,20 @@ gluggModel makeSidewalks(){
 		gluggScale(40,1,1.5);		
 		gluggCube(1);
 		gluggPopMatrix();		
-		
 	}
 	gluggPopMatrix();
 	return gluggBuildModel(0);
 }
 
+void foo(float translate, float scale, float start){
+	gluggSetPositionName("inPosition");
+	gluggSetNormalName("inNormal");
+	gluggSetTexCoordName("inTexCoord");
+	gluggSetColorName("inColor");
+	gluggBegin(GLUGG_TRIANGLES);
+	gluggTranslate(start,translate,start);
+	gluggScale(1,scale,1);
+	globalCounter = 0;
+}
 #endif
 // #endif
